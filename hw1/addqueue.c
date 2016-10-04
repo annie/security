@@ -23,7 +23,7 @@ char *setName(char *fname) {
     // stores files in queue using the following name format: 
     // <arbitrary hash name>_<user id>_<timestampe>_<original filename>
     fname_ptr += sprintf(fname_ptr, "%lu", (unsigned long int)getuid());
-    fname_ptr += sprintf(fname_ptr, "_%lu", hash(fname));
+    fname_ptr += sprintf(fname_ptr, "%lu", hash(fname));
     fname_ptr += sprintf(fname_ptr, "_%lu", (unsigned int)time(NULL));
     fname_ptr += sprintf(fname_ptr, "_%s", fname);
 
@@ -40,7 +40,8 @@ int main(int argc, char **argv) {
     char *dir_name = "queue";
     mkdir(dir_name, S_IRWXU | S_IRWXG | S_IRWXO);
     
-    for (int i = 1; i < argc; i++) {
+    int i = 1;
+    for (i = 1; i < argc; i++) {
         
         char path[4096];
         strcpy(path, dir_name);

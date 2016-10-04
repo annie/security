@@ -24,7 +24,8 @@ int main(int argc, char **argv) {
 
     char *dir_name = "queue";
 
-    for (int i = 1; i < argc; i++) {
+    int i = 1;
+    for (i = 1; i < argc; i++) {
         // see if queue has file
         char path[4096];
         strcpy(path, dir_name);
