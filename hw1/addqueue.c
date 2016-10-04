@@ -51,12 +51,13 @@ int main(int argc, char **argv) {
         strcat(path, name);
 
         FILE *fp = fopen(argv[i], "r");
-        FILE *cp = fopen(path, "w");
 
         if (!fp) {
             fprintf(stderr, "%s: file not found\n", argv[i]);
             continue;
         }
+
+        FILE *cp = fopen(path, "w");
 
         // get size of file
         fseek(fp, 0, SEEK_END);
