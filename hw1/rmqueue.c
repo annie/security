@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
 
     int i = 1;
     for (i = 1; i < argc; i++) {
-        // see if queue has file
+
         char path[4096];
         strcpy(path, dir_name);
         strcat(path, "/");
@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
             continue;
         }
 
-        // get owner id of file
+        // get uid of the owner of the file by parsing filename
         char ownerId[11];
         getId(argv[i], ownerId);
 
@@ -48,9 +48,8 @@ int main(int argc, char **argv) {
             continue;
         }
 
-        // print success or failure message
         remove(path);
-        printf("%s: removed file from queue", argv[i]);
+        printf("%s: removed file from queue\n", argv[i]);
     }
 
     return 0;

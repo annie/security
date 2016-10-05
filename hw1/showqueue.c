@@ -29,6 +29,7 @@ int main() {
         return 1;
     }
 
+    // read through all the files in the directory, ignoring . and ..
     while (dp = readdir(dir)) {
         if (strcmp(dp->d_name, ".") == 0 || strcmp(dp->d_name, "..") == 0) {
             continue;
@@ -37,10 +38,11 @@ int main() {
         char *fid = dp->d_name;
         char *f_ptr = fid;
 
-        char arb_name[256];
-        f_ptr += getName(f_ptr, arb_name);
+        // parse the filename for user id, arbitrary name, timestamp
         char uid[256];
         f_ptr += getName(f_ptr, uid);
+        char arb_name[256];
+        f_ptr += getName(f_ptr, arb_name);
         char timestamp[256];
         f_ptr += getName(f_ptr, timestamp);
 
@@ -50,7 +52,6 @@ int main() {
         time_t ts = (atoi(timestamp));
         dt = localtime(&ts);
         strftime(datetime, sizeof(datetime), "%Y-%m-%d_%H:%M", dt);
-        
         datetime[16] = '\0';
 
         printf("%s\t%s\t%s\t%s\n", arb_name, uid, datetime, fid);
