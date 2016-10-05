@@ -2,6 +2,6 @@
 #define __ADDQUEUE_H__
 
 unsigned long hash(char *str);
-char *setName(char *fname, int current_uid);
+char *setName(char *fn);
 
 #endif
