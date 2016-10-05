@@ -4,7 +4,6 @@
 #include <time.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <dirent.h>
 
 #include "addqueue.h"
 
@@ -19,13 +18,13 @@ unsigned long hash(char *str) {
     return hash;
 }
 
-char *setName(char *fname, int current_uid) {
+char *setName(char *fname) {
     char new_fname[4096];
     char *fname_ptr = new_fname;
 
     // stores files in queue using the following name format: 
     // <user id>_<arbitrary hash name>_<timestamp>_<original filename>
-    fname_ptr += sprintf(fname_ptr, "%d", current_uid);
+    fname_ptr += sprintf(fname_ptr, "%lu", (unsigned long int)getuid());
     fname_ptr += sprintf(fname_ptr, "_%lu", hash(fname));
     fname_ptr += sprintf(fname_ptr, "_%lu", (unsigned int)time(NULL));
     fname_ptr += sprintf(fname_ptr, "_%s", fname);
@@ -39,12 +38,9 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    // create new protected directory if it doesn't exist
+    // create new queue directory if it doesn't exist
     char *dir_name = "queue";
-
-    int current_uid = getuid();
-    setuid(0);
-    mkdir(dir_name, S_IRWXU);
+    mkdir(dir_name, S_IRWXU | S_IRWXG | S_IRWXO);
     
     int i = 1;
     for (i = 1; i < argc; i++) {
@@ -53,7 +49,7 @@ int main(int argc, char **argv) {
         strcpy(path, dir_name);
         strcat(path, "/");
 
-        char *name = setName(argv[i], current_uid);
+        char *name = setName(argv[i]);
         strcat(path, name);
 
         FILE *fp = fopen(argv[i], "r");
