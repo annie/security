@@ -4,6 +4,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include "rmqueue.h"
+
 void getId(char *fid, char *name) {
     int i = 0;
 

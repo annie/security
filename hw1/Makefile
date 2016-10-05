@@ -3,19 +3,22 @@ INCLUDES =
 CFLAGS = -g -Wall $(INCLUDES)
 LDFLAGS = -g
 
-all: addqueue showqueue rmqueue
+build:	addqueue showqueue rmqueue
 
-addqueue: addqueue.o
+test:	clean
+		sudo python test.py
 
-addqueue.o: addqueue.c addqueue.h
+addqueue:	addqueue.o
 
-showqueue: showqueue.o
+addqueue.o:	addqueue.c addqueue.h
 
-showqueue.o: showqueue.c showqueue.h
+showqueue:	showqueue.o
 
-rmqueue: rmqueue.o
+showqueue.o:	showqueue.c showqueue.h
 
-rmqueue.o: rmqueue.o rmqueue.h
+rmqueue:	rmqueue.o
+
+rmqueue.o:	rmqueue.o rmqueue.h
 
 .PHONY: clean
 clean:

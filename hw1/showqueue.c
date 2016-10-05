@@ -4,6 +4,8 @@
 #include <dirent.h>
 #include <time.h>
 
+#include "showqueue.h"
+
 int getName(char *fid, char *name) {
     int i = 0;
 

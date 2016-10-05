@@ -5,6 +5,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#include "addqueue.h"
+
 // using djb2 hash function for arbitrary name (http://www.cse.yorku.ca/~oz/hash.html)
 unsigned long hash(char *str) {
     unsigned long hash = 5381;
