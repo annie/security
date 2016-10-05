@@ -39,41 +39,25 @@ def test_rmqueue():
 
     print
 
-    print "switching to user new_user"
-    os.system("sudo su new_user")
-    os.system("su new_user")
-    print "user new_user does not own files in the queue, rmqueue should fail"
-    print " ".join(rmqueue)
-    stdout, stderr = subprocess.Popen(rmqueue, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
-    print stderr
+    pid = os.fork()
+    if pid == 0:
+        try:
+            print "switching to user 100"
+            os.setuid(100)
+            print "user 100 does not own files in the queue, rmqueue should fail"
+            print " ".join(rmqueue)
+            stdout, stderr = subprocess.Popen(rmqueue, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+            print stderr
+        finally:
+            os._exit(0)
 
-    print "switching back to original user"
-    print "original user owns files in the queue, rmqueue should complete successfully"
+    os.waitpid(pid, 0)
+
+    print "switching back to root user"
+    print "root user owns files in the queue, rmqueue should complete successfully"
     print " ".join(rmqueue)
     stdout, stderr = subprocess.Popen(rmqueue, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
     print stdout
-    os.system("exit")
-
-
-    # pid = os.fork()
-    # if pid == 0:
-    #     try:
-    #         print "switching to user 100"
-    #         os.setuid(100)
-    #         print "user 100 does not own files in the queue, rmqueue should fail"
-    #         print " ".join(rmqueue)
-    #         stdout, stderr = subprocess.Popen(rmqueue, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
-    #         print stderr
-    #     finally:
-    #         os._exit(0)
-
-    # os.waitpid(pid, 0)
-
-    # print "switching back to root user"
-    # print "root user owns files in the queue, rmqueue should complete successfully"
-    # print " ".join(rmqueue)
-    # stdout, stderr = subprocess.Popen(rmqueue, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
-    # print stdout
 
 
 def main():
