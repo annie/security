@@ -8,3 +8,6 @@ My showqueue program will read through the queue directory and print a formatted
 
 RMQUEUE
 My rmqueue program will check to see if the file to be removed exists in the queue, and then check if the user who called rmqueue is the same user who added the file to be removed. If they are the same user, rmqueue deletes the file. If not, rmqueue prints an error message.
+
+TESTS
+I wrote a batch of tests in `test.py`, which can be run with `make test`. The tests for addqueue and showqueue are straightfoward, but you may be surprised to see that I fork a child process in the rmqueue test. I do this because with the Python `os` library it is illegal to manually setuid to 0 (or root). In order to test as a different user, I have to use a child process.

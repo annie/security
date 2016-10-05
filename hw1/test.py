@@ -39,6 +39,7 @@ def test_rmqueue():
 
     print
 
+    # fork a child process to test as a different user
     pid = os.fork()
     if pid == 0:
         try:
@@ -53,6 +54,7 @@ def test_rmqueue():
 
     os.waitpid(pid, 0)
 
+    # return to parent process and test as root user
     print "switching back to root user"
     print "root user owns files in the queue, rmqueue should complete successfully"
     print " ".join(rmqueue)
