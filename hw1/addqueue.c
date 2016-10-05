@@ -23,7 +23,7 @@ char *setName(char *fname) {
     // stores files in queue using the following name format: 
     // <arbitrary hash name>_<user id>_<timestampe>_<original filename>
     fname_ptr += sprintf(fname_ptr, "%lu", (unsigned long int)getuid());
-    fname_ptr += sprintf(fname_ptr, "%lu", hash(fname));
+    fname_ptr += sprintf(fname_ptr, "_%lu", hash(fname));
     fname_ptr += sprintf(fname_ptr, "_%lu", (unsigned int)time(NULL));
     fname_ptr += sprintf(fname_ptr, "_%s", fname);
 
