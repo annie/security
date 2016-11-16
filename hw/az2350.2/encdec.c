@@ -30,7 +30,7 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
                 }
                 else {
                     // printf("input[i+1]: %c\n", input[i+1]);
-                    printf("escape char error\n");
+                    fprintf(stderr, "escape char error\n");
                     return 0;
                 }
             }
@@ -52,13 +52,13 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
                 }
                 if (inDoubleQuotes == 1) {
                     if (i < strlen(input) - 1 && input[i+1] != ' ') {
-                        printf("unescaped double quote\n");
+                        fprintf(stderr, "unescaped double quote\n");
                         return 0;
                     }
 
                     // end of a double-quoted string
                     if (argCount > maxArg) {
-                        printf("too many args\n");
+                        fprintf(stderr, "too many args\n");
                         return 0;
                     }
 
@@ -87,13 +87,13 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
                 }
                 if (inSingleQuotes == 1) {
                     if (i < strlen(input) - 1 && input[i+1] != ' ') {
-                        printf("unescaped single quote\n");
+                        fprintf(stderr, "unescaped single quote\n");
                         return 0;
                     }
 
                     // end of a single-quoted string
                     if (argCount > maxArg) {
-                        printf("too many args\n");
+                        fprintf(stderr, "too many args\n");
                         return 0;
                     }
 
@@ -117,7 +117,7 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
         else if (i == strlen(input) - 1 || (input[i] != ' ' && input[i+1] == ' ')) {
             if (!inDoubleQuotes && !inSingleQuotes) {
                 if (argCount > maxArg) {
-                    printf("too many args");
+                    fprintf(stderr, "too many args");
                     return 0;
                 }
 
@@ -149,7 +149,7 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
     // }
 
     if (inDoubleQuotes != 0 || inSingleQuotes != 0) {
-        printf("unclosed quote\n");
+        fprintf(stderr, "unclosed quote\n");
         return 0;
     }
     return 1;
@@ -199,7 +199,7 @@ int main(int argc, char **argv) {
                 continue;
             }
 
-            static char keyf[256];
+            char keyf[256];
             keyf[0] = '\0';
 
             while (fgets(line, sizeof(line), fp)) {
@@ -243,8 +243,6 @@ int main(int argc, char **argv) {
                     // printf("infile: %s\n", infile);
                     // printf("outfile: %s\n", outfile);
 
-                    // printf("keyf before fork: %s\n", keyf);
-
                     int pid = fork();
 
                     // child process
@@ -275,6 +273,9 @@ int main(int argc, char **argv) {
                 // }
 
                 else if (strncmp(splitLine[0], "keyfile", strlen("keyfile")) == 0) {
+                    if (!splitLine[1] || splitLine[2]) {
+                        fprintf(stderr, "keyfile is called with 1 argument: <keyfile>");
+                    }
                     char new_keyf[256];
                     strip(splitLine[1], new_keyf);
 
