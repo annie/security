@@ -301,11 +301,14 @@ int main(int argc, char **argv) {
                     printf("password: %s\n", splitLine[1]);
                     printf("pass keyfile: %s\n", splitLine[2]);
 
-                    FILE *kfp = fopen(splitLine[2], "w");
-                //     // fprintf(kfp, "%s", key);
-                    fprintf(kfp, "%s", splitLine[1]);
+                    char new_password[256];
+                    char new_keyf[256];
 
-                    strncpy(keyf, splitLine[2], strlen(splitLine[2]));
+                    FILE *kfp = fopen(new_keyf, "w");
+                //     // fprintf(kfp, "%s", key);
+                    fprintf(kfp, "%s", new_password);
+
+                    strncpy(keyf, new_keyf, strlen(new_keyf));
                 }
 
                 // else if (strncmp(splitLine[0], "cd", strlen("cd")) == 0) {
