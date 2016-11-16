@@ -199,7 +199,8 @@ int main(int argc, char **argv) {
                 continue;
             }
 
-            char *keyf = malloc(sizeof(char) * 256);
+            char keyf[256];
+            keyf[0] = '\0';
 
             while (fgets(line, sizeof(line), fp)) {
                 char *splitLine[3] = { NULL };
@@ -249,9 +250,9 @@ int main(int argc, char **argv) {
                     // child process
                     if (pid == 0) {
                         char lastArg[256] = { NULL };
-                        strncpy(lastArg, "file:\0", strlen("file:\0"));
-                        strncat(lastArg, keyf, strlen(keyf));
-                        execl("/usr/bin/openssl", "enc", "-aes-128-cbc", "-e", "-in", infile, "-out", outfile, "-pass", lastArg, (char *) NULL);
+                        // strncpy(lastArg, "file:\0", strlen("file:\0"));
+                        // strncat(lastArg, keyf, strlen(keyf));
+                        execl("/usr/bin/openssl", "enc", "-aes-128-cbc", "-e", "-in", infile, "-out", outfile, "-pass", "lastArg", (char *) NULL);
                     }
 
                     // check if fork failed
@@ -325,7 +326,6 @@ int main(int argc, char **argv) {
                     }
                 }
             }
-            // free(keyf);
 
             fclose(fp);
         }
