@@ -324,8 +324,8 @@ int main(int argc, char **argv) {
                         free(splitLine[i]);
                     }
                 }
-                free(keyf);
             }
+            free(keyf);
 
             fclose(fp);
         }
