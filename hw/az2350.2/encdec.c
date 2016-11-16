@@ -124,7 +124,7 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
                 char *newArg = malloc(sizeof(char) * 256);
                 strncpy(newArg, start + lastUnquotedStart, i - lastUnquotedStart + 2);
                 // printf("UQ newArg[strlen(newArg)-1]:%cend\n", newArg[strlen(newArg)-1]);
-                int tail = i - lastDoubleQuotedStart + 2;
+                int tail = i - lastUnquotedStart + 2;
                 while (tail < strlen(newArg)) {
                     newArg[tail] = '\0';
                 }
@@ -268,9 +268,12 @@ int main(int argc, char **argv) {
                 // }
 
                 else if (strncmp(splitLine[0], "keyfile", strlen("keyfile")) == 0) {
-                    fopen(splitLine[1], "w");
+                    char new_keyf[256];
+                    strip(splitLine[1], new_keyf);
 
-                    strncpy(keyf, splitLine[1], strlen(splitLine[1]));
+                    fopen(new_keyf, "w");
+
+                    strncpy(keyf, new_keyf, strlen(splitLine[1]));
                 }
 
                 else if (strncmp(splitLine[0], "password", strlen("password")) == 0) {
@@ -283,6 +286,9 @@ int main(int argc, char **argv) {
 
                 //     // hmac_sha1(splitLine[1], strlen(splitLine[1]), "salt", strlen("salt"), key);
                 //     // // printf("key: %s\n", key);
+
+                    printf("password: %s\n", splitLine[1]);
+                    printf("pass keyfile: %s\n", splitLine[2]);
 
                     FILE *kfp = fopen(splitLine[2], "w");
                 //     // fprintf(kfp, "%s", key);
