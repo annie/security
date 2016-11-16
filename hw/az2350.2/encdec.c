@@ -2,11 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include "hmacsha1.h"
+#include <openssl/evp.h>
+// #include "hmacsha1.h"
 
-char *PBKDF2(char *P, char *s, int c, int dkLen) {
-    return "hi";
-}
+// char *PBKDF2(char *P, char *s, int c, int dkLen) {
+//     return "hi";
+// }
 
 int sanitize(char input[], char *splitLine[], int maxArg) {
     int inDoubleQuotes = 0;
@@ -294,11 +295,6 @@ int main(int argc, char **argv) {
                         continue;
                     }
 
-                //     // char key[256];
-
-                //     // hmac_sha1(splitLine[1], strlen(splitLine[1]), "salt", strlen("salt"), key);
-                //     // // printf("key: %s\n", key);
-
                     printf("password: %s\n", splitLine[1]);
                     printf("pass keyfile: %s\n", splitLine[2]);
 
@@ -307,6 +303,11 @@ int main(int argc, char **argv) {
 
                     strip(splitLine[1], new_password);
                     strip(splitLine[2], new_keyf);
+
+                    char keyBuf[8];
+
+                    PKCS5_PBKDF2_HMAC_SHA1(new_password, strlen(new_password), NULL, 0, 1000, 8, keyBuf);
+                    printf("key: %s\n", keyBuf);
 
                     FILE *kfp = fopen(new_keyf, "w");
                 //     // fprintf(kfp, "%s", key);
