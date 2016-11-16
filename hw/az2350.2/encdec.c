@@ -247,6 +247,7 @@ int main(int argc, char **argv) {
                         char lastArg[256];
                         strncpy(lastArg, "file:", strlen("file:"));
                         strncat(lastArg, keyf, strlen(keyf));
+                        printf("lastArg: %s\n", lastArg);
                         execl("/usr/bin/openssl", "enc", "-aes-128-cbc", "-e", "-in", infile, "-out", outfile, "-pass", lastArg, (char *) NULL);
                     }
 
