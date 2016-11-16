@@ -246,6 +246,7 @@ int main(int argc, char **argv) {
                     if (pid == 0) {
                         char lastArg[256];
                         strncpy(lastArg, "file:", strlen("file:"));
+                        printf("lastArg before: %s\n", lastArg);
                         strncat(lastArg, keyf, strlen(keyf));
                         printf("lastArg: %s\n", lastArg);
                         printf("keyf: %s\n", keyf);
@@ -301,10 +302,6 @@ int main(int argc, char **argv) {
                     fprintf(kfp, "%s", splitLine[1]);
 
                     strncpy(keyf, splitLine[2], strlen(splitLine[2]));
-                    int tail = strlen(splitLine[2]);
-                    while (tail < strlen(keyf)) {
-                        tail = '\0';
-                    }
                 }
 
                 // else if (strncmp(splitLine[0], "cd", strlen("cd")) == 0) {
