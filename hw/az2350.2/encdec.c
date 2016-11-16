@@ -250,9 +250,9 @@ int main(int argc, char **argv) {
                     // child process
                     if (pid == 0) {
                         char lastArg[256] = { NULL };
-                        // strncpy(lastArg, "file:\0", strlen("file:\0"));
-                        // strncat(lastArg, keyf, strlen(keyf));
-                        execl("/usr/bin/openssl", "enc", "-aes-128-cbc", "-e", "-in", infile, "-out", outfile, "-pass", "lastArg", (char *) NULL);
+                        strncpy(lastArg, "file:\0", strlen("file:\0"));
+                        strncat(lastArg, keyf, strlen(keyf));
+                        execl("/usr/bin/openssl", "enc", "-aes-128-cbc", "-e", "-in", infile, "-out", outfile, "-pass", lastArg, (char *) NULL);
                     }
 
                     // check if fork failed
