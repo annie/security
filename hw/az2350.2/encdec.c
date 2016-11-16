@@ -280,6 +280,7 @@ int main(int argc, char **argv) {
                     fopen(new_keyf, "w");
 
                     strncpy(keyf, new_keyf, strlen(new_keyf));
+                    printf("keyf set to: %s\n", keyf);
 
                 }
 
