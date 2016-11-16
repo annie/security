@@ -17,6 +17,8 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
 
     int argCount = 0;
 
+    char *start = input;
+
     int i = 0;
     while (i < strlen(input)) {
         // if we encounter an escape char
@@ -63,7 +65,7 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
                     char *newArg = malloc(sizeof(char) * 256);
                     printf("input + lastDoubleQuotedStart: %d\n", input + lastDoubleQuotedStart);
                     printf("i - lastDoubleQuotedStart + 1: %d\n", i - lastDoubleQuotedStart + 1);
-                    strncpy(newArg, input + lastDoubleQuotedStart, i - lastDoubleQuotedStart + 1);
+                    strncpy(newArg, start + lastDoubleQuotedStart, i - lastDoubleQuotedStart + 1);
                     newArg[strlen(newArg)] = '\0';
                     newArg[strlen(newArg)-1] = '\0';
                     // newArg[strlen(newArg)-2] = '\0';
@@ -109,7 +111,7 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
                     }
 
                     char *newArg = malloc(sizeof(char) * 256);
-                    strncpy(newArg, input + lastSingleQuotedStart, i - lastSingleQuotedStart + 1);
+                    strncpy(newArg, start + lastSingleQuotedStart, i - lastSingleQuotedStart + 1);
                     // printf("SQ newArg[strlen(newArg)-1]: %c\n", newArg[strlen(newArg)-1]);
                     int tail = strlen(newArg)-1;
                     while (newArg[tail] == ' ' || !newArg[tail]) {
@@ -135,7 +137,7 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
                 }
 
                 char *newArg = malloc(sizeof(char) * 256);
-                strncpy(newArg, input + lastUnquotedStart, i - lastUnquotedStart + 2);
+                strncpy(newArg, start + lastUnquotedStart, i - lastUnquotedStart + 2);
                 // printf("UQ newArg[strlen(newArg)-1]:%cend\n", newArg[strlen(newArg)-1]);
                 int tail = strlen(newArg)-1;
                 while (newArg[tail] == ' ' || !newArg[tail]) {
