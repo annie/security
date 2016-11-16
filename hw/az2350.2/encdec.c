@@ -273,6 +273,8 @@ int main(int argc, char **argv) {
                     char new_keyf[256];
                     strip(splitLine[1], new_keyf);
 
+                    printf("new_keyf: %s\n", new_keyf);
+
                     fopen(new_keyf, "w");
 
                     strncpy(keyf, new_keyf, strlen(splitLine[1]));
