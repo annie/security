@@ -199,8 +199,7 @@ int main(int argc, char **argv) {
                 continue;
             }
 
-            char keyf[256];
-            keyf[0] = '\0';
+            char *keyf = malloc(sizeof(char) * 256);
 
             while (fgets(line, sizeof(line), fp)) {
                 char *splitLine[3] = { NULL };
@@ -325,6 +324,7 @@ int main(int argc, char **argv) {
                         free(splitLine[i]);
                     }
                 }
+                free(keyf);
             }
 
             fclose(fp);
