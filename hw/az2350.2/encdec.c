@@ -66,8 +66,12 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
                     printf("starting: %c\n", input[lastDoubleQuotedStart]);
                     printf("i - lastDoubleQuotedStart + 1: %d\n", i - lastDoubleQuotedStart + 1);
                     strncpy(newArg, start + lastDoubleQuotedStart, i - lastDoubleQuotedStart + 1);
-                    newArg[strlen(newArg)] = '\0';
-                    newArg[strlen(newArg)-1] = '\0';
+                    int tail = i - lastDoubleQuotedStart;
+                    while (tail < strlen(newArg)) {
+                        newArg[tail] = '\0';
+                    }
+                    // newArg[strlen(newArg)] = '\0';
+                    // newArg[strlen(newArg)-1] = '\0';
                     // newArg[strlen(newArg)-2] = '\0';
                     printf("newArg: %s\n", newArg);
                     // printf("DQ newArg[strlen(newArg)-1]:%cend\n", newArg[strlen(newArg)-1]);
