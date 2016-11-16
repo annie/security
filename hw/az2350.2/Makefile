@@ -1,5 +1,5 @@
 CC = gcc
-INCLUDES = 
+INCLUDES =
 CFLAGS = -g -Wall $(INCLUDES)
 LDFLAGS = -g
 
