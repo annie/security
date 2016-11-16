@@ -70,16 +70,7 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
                     while (tail < strlen(newArg)) {
                         newArg[tail] = '\0';
                     }
-                    // newArg[strlen(newArg)] = '\0';
-                    // newArg[strlen(newArg)-1] = '\0';
-                    // newArg[strlen(newArg)-2] = '\0';
                     printf("newArg: %s\n", newArg);
-                    // printf("DQ newArg[strlen(newArg)-1]:%cend\n", newArg[strlen(newArg)-1]);
-                    // int tail = strlen(newArg)-1;
-                    // while (newArg[tail] == ' ' || !newArg[tail]) {
-                    //     tail--;
-                    // }
-                    // newArg[tail+1] = '\0';
                     
                     printf("newArg[i - lastDoubleQuotedStart + 1]: %c\n", newArg[i - lastDoubleQuotedStart + 1]);
                     printf("newArg[i - lastDoubleQuotedStart]: %c\n", newArg[i - lastDoubleQuotedStart]);
@@ -117,11 +108,10 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
                     char *newArg = malloc(sizeof(char) * 256);
                     strncpy(newArg, start + lastSingleQuotedStart, i - lastSingleQuotedStart + 1);
                     // printf("SQ newArg[strlen(newArg)-1]: %c\n", newArg[strlen(newArg)-1]);
-                    int tail = strlen(newArg)-1;
-                    while (newArg[tail] == ' ' || !newArg[tail]) {
-                        tail--;
+                    int tail = i - lastDoubleQuotedStart + 1;
+                    while (tail < strlen(newArg)) {
+                        newArg[tail] = '\0';
                     }
-                    newArg[tail+1] = '\0';
                     // printf("newArg: %s\n", newArg);
                     // printf("newArg[strlen(newArg)-1]: %c\n", newArg[strlen(newArg)-1]);
                     // printf("newArg2: %s\n", newArg);
@@ -143,11 +133,10 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
                 char *newArg = malloc(sizeof(char) * 256);
                 strncpy(newArg, start + lastUnquotedStart, i - lastUnquotedStart + 2);
                 // printf("UQ newArg[strlen(newArg)-1]:%cend\n", newArg[strlen(newArg)-1]);
-                int tail = strlen(newArg)-1;
-                while (newArg[tail] == ' ' || !newArg[tail]) {
-                    tail--;
+                int tail = i - lastDoubleQuotedStart + 2;
+                while (tail < strlen(newArg)) {
+                    newArg[tail] = '\0';
                 }
-                newArg[tail+1] = '\0';
                 printf("newArg: %s\n", newArg);
                 printf("newArg[strlen(newArg)-1]: %c\n", newArg[strlen(newArg)-1]);
                 printf("newArg2: %s\n", newArg);
