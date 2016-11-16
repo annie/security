@@ -325,7 +325,7 @@ int main(int argc, char **argv) {
                     }
                 }
             }
-            free(keyf);
+            // free(keyf);
 
             fclose(fp);
         }
