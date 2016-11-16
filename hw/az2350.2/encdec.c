@@ -244,7 +244,7 @@ int main(int argc, char **argv) {
 
                     // child process
                     if (pid == 0) {
-                        char lastArg[256];
+                        char lastArg[256] = { NULL };
                         printf("lastArg initial: %s\n", lastArg);
                         strncpy(lastArg, "file:\0", strlen("file:\0"));
                         printf("lastArg before: %s\n", lastArg);
