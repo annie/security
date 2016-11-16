@@ -163,7 +163,7 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
 void strip(char arg[], char strippedArg[]) {
     int i = 0;
     int j = 0;
-    int end = strlen(arg);
+    int end = strlen(arg)-1;
     while (arg[end] == ' ' || arg[end] == '\0') {
         end--;
     }
@@ -182,7 +182,7 @@ void strip(char arg[], char strippedArg[]) {
         }
         j++;
     }
-    // strippedArg[j] = '\0';
+    strippedArg[j] = '\0';
 }
 
 int main(int argc, char **argv) {
@@ -223,9 +223,9 @@ int main(int argc, char **argv) {
                 }
 
                 if (strncmp(splitLine[0], "encrypt", strlen("encrypt")) == 0) {
-                    // printf("splitLine[0]: %s\n", splitLine[0]);
-                    // printf("splitLine[1]: %s\n", splitLine[1]);
-                    // printf("splitLine[2]: %s\n", splitLine[2]);
+                    printf("splitLine[0]: %s\n", splitLine[0]);
+                    printf("splitLine[1]: %s\n", splitLine[1]);
+                    printf("splitLine[2]: %s\n", splitLine[2]);
 
                     if (strlen(keyf) == 0) {
                         fprintf(stderr, "keyfile must be specified before encrypt/decrypt commands\n");
