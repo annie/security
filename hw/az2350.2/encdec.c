@@ -63,7 +63,7 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
                     }
 
                     char *newArg = malloc(sizeof(char) * 256);
-                    printf("starting: %d\n", input[start + lastDoubleQuotedStart]);
+                    printf("starting: %c\n", input[start + lastDoubleQuotedStart]);
                     printf("i - lastDoubleQuotedStart + 1: %d\n", i - lastDoubleQuotedStart + 1);
                     strncpy(newArg, start + lastDoubleQuotedStart, i - lastDoubleQuotedStart + 1);
                     newArg[strlen(newArg)] = '\0';
