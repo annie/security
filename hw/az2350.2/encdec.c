@@ -248,6 +248,7 @@ int main(int argc, char **argv) {
                         strncpy(lastArg, "file:", strlen("file:"));
                         strncat(lastArg, keyf, strlen(keyf));
                         printf("lastArg: %s\n", lastArg);
+                        printf("keyf: %s\n", keyf);
                         execl("/usr/bin/openssl", "enc", "-aes-128-cbc", "-e", "-in", infile, "-out", outfile, "-pass", lastArg, (char *) NULL);
                     }
 
@@ -300,6 +301,10 @@ int main(int argc, char **argv) {
                     fprintf(kfp, "%s", splitLine[1]);
 
                     strncpy(keyf, splitLine[2], strlen(splitLine[2]));
+                    int tail = strlen(splitLine[2]);
+                    while (tail < strlen(keyf)) {
+                        tail = '\0';
+                    }
                 }
 
                 // else if (strncmp(splitLine[0], "cd", strlen("cd")) == 0) {
