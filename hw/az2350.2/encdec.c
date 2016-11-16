@@ -199,7 +199,7 @@ int main(int argc, char **argv) {
                 continue;
             }
 
-            char keyf[256];
+            static char keyf[256];
             keyf[0] = '\0';
 
             while (fgets(line, sizeof(line), fp)) {
