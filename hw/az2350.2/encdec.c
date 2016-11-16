@@ -240,17 +240,15 @@ int main(int argc, char **argv) {
                     printf("infile: %s\n", infile);
                     printf("outfile: %s\n", outfile);
 
+                    printf("keyf before fork: %s\n", keyf);
+
                     int pid = fork();
 
                     // child process
                     if (pid == 0) {
                         char lastArg[256] = { NULL };
-                        printf("lastArg initial: %s\n", lastArg);
                         strncpy(lastArg, "file:\0", strlen("file:\0"));
-                        printf("lastArg before: %s\n", lastArg);
                         strncat(lastArg, keyf, strlen(keyf));
-                        printf("lastArg: %s\n", lastArg);
-                        printf("keyf: %s\n", keyf);
                         execl("/usr/bin/openssl", "enc", "-aes-128-cbc", "-e", "-in", infile, "-out", outfile, "-pass", lastArg, (char *) NULL);
                     }
 
@@ -282,6 +280,7 @@ int main(int argc, char **argv) {
                     fopen(new_keyf, "w");
 
                     strncpy(keyf, new_keyf, strlen(splitLine[1]));
+
                 }
 
                 else if (strncmp(splitLine[0], "password", strlen("password")) == 0) {
