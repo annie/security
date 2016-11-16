@@ -3,11 +3,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <openssl/evp.h>
-// #include "hmacsha1.h"
-
-// char *PBKDF2(char *P, char *s, int c, int dkLen) {
-//     return "hi";
-// }
+#include <sys/types.h>
+#include <sys/stat.h>
 
 int sanitize(char input[], char *splitLine[], int maxArg) {
     int inDoubleQuotes = 0;
@@ -24,28 +21,32 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
     while (i < strlen(input)) {
         // if we encounter an escape char
         if (input[i] == '\\' && i < strlen(input)-1) {
-            if ((inDoubleQuotes == 1 || inSingleQuotes == 1)) {
-                if (input[i+1] == '\\' || input[i+1] == '\'' || input[i+1] == '"') {
+            if (inDoubleQuotes == 1) {
+                if (input[i+1] == '\\' || input[i+1] == '"') {
                     i += 2;
                     continue;
                 }
                 else {
-                    // printf("input[i+1]: %c\n", input[i+1]);
+                    fprintf(stderr, "escape char error\n");
+                    return 0;
+                }
+            }
+            if (inSingleQuotes == 1) {
+                if (input[i+1] == '\\' || input[i+1] == '\'') {
+                    i += 2;
+                    continue;
+                }
+                else {
                     fprintf(stderr, "escape char error\n");
                     return 0;
                 }
             }
         }
         // if we encounter a double quote
-        if (input[i] == '"') {
+        if (input[i] == '"' && i < strlen(input)-1) {
             if (i >= 1 && input[i-1] != '\\') {
                 // beginning of a double-quoted string
-                // if (inDoubleQuotes == 0) {
-                //     if (inSingleQuotes == 1) {
-                //         continue;
-                //     }
-                // }
-                if (inSingleQuotes == 0 && inDoubleQuotes == 0 && (input[i-1] == ' ' || i == strlen(input)-1)) {
+                if (inSingleQuotes == 0 && inDoubleQuotes == 0 && input[i-1] == ' ') {
                     inDoubleQuotes = 1;
                     lastDoubleQuotedStart = i;
                     i++;
@@ -68,6 +69,7 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
                     int tail = i - lastDoubleQuotedStart + 1;
                     while (tail < strlen(newArg)) {
                         newArg[tail] = '\0';
+                        tail++;
                     }
 
                     splitLine[argCount] = newArg;
@@ -77,10 +79,10 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
             }
         }
         // if we encounter a single quote
-        else if (input[i] == '\'') {
+        else if (input[i] == '\'' && i < strlen(input)-1) {
             if (i >= 1 && input[i-1] != '\\') {
                 // beginning of a single-quoted string
-                if (inDoubleQuotes == 0 && inSingleQuotes == 0 && (input[i-1] == ' ' || i == strlen(input)-1)) {
+                if (inDoubleQuotes == 0 && inSingleQuotes == 0 && input[i-1] == ' ') {
                     inSingleQuotes = 1;
                     lastSingleQuotedStart = i;
                     i++;
@@ -103,10 +105,8 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
                     int tail = i - lastSingleQuotedStart + 1;
                     while (tail < strlen(newArg)) {
                         newArg[tail] = '\0';
+                        tail++;
                     }
-                    // printf("newArg: %s\n", newArg);
-                    // printf("newArg[strlen(newArg)-1]: %c\n", newArg[strlen(newArg)-1]);
-                    // printf("newArg2: %s\n", newArg);
 
                     splitLine[argCount] = newArg;
                     argCount++;
@@ -128,6 +128,7 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
                 int tail = i - lastUnquotedStart + 2;
                 while (tail < strlen(newArg)) {
                     newArg[tail] = '\0';
+                    tail++;
                 }
 
                 splitLine[argCount] = newArg;
@@ -142,12 +143,6 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
 
         i++;
     }
-
-    // printf("argcount: %d\n", argCount);
-
-    // if (argCount != args) {
-    //     return 0;
-    // }
 
     if (inDoubleQuotes != 0 || inSingleQuotes != 0) {
         fprintf(stderr, "unclosed quote\n");
@@ -251,7 +246,7 @@ int main(int argc, char **argv) {
                         char lastArg[256] = { NULL };
                         strncpy(lastArg, "file:\0", strlen("file:\0"));
                         strncat(lastArg, keyf, strlen(keyf));
-                        execl("/usr/bin/openssl", "enc", "-aes-128-cbc", "-e", "-in", infile, "-out", outfile, "-pass", lastArg, (char *) NULL);
+                        execl("/usr/bin/openssl", "enc", "-aes-128-cbc", "-base64", "-e", "-in", infile, "-out", outfile, "-pass", lastArg, (char *) NULL);
                     }
 
                     // check if fork failed
@@ -261,22 +256,45 @@ int main(int argc, char **argv) {
                     }
                 }
 
-                // else if (strncmp(splitLine[0], "decrypt", strlen("decrypt")) == 0) {
-                //     // if (strlen(keyf) == 0) {
-                //     //     fprintf(stderr, "keyfile must be specified before encrypt/decrypt commands");
-                //     //     continue;
-                //     // }
-                //     // if (!splitLine[1] || !splitLine[2]) {
-                //     //     fprintf(stderr, "decrypt is called with 2 arguments: <inputfile> and <outputfile>\n");
-                //     //     continue;
-                //     // }
+                else if (strncmp(splitLine[0], "decrypt", strlen("decrypt")) == 0) {
+                    if (strlen(keyf) == 0) {
+                        fprintf(stderr, "keyfile must be specified before encrypt/decrypt commands");
+                        continue;
+                    }
+                    if (!splitLine[1] || !splitLine[2]) {
+                        fprintf(stderr, "decrypt is called with 2 arguments: <inputfile> and <outputfile>\n");
+                        continue;
+                    }
 
-                // }
+                    char infile[256];
+                    char outfile[256];
+                    strip(splitLine[1], infile);
+                    strip(splitLine[2], outfile);
+                    // printf("infile: %s\n", infile);
+                    // printf("outfile: %s\n", outfile);
+
+                    int pid = fork();
+
+                    // child process
+                    if (pid == 0) {
+                        char lastArg[256] = { NULL };
+                        strncpy(lastArg, "file:\0", strlen("file:\0"));
+                        strncat(lastArg, keyf, strlen(keyf));
+                        execl("/usr/bin/openssl", "enc", "-aes-128-cbc", "-base64", "-d", "-in", infile, "-out", outfile, "-pass", lastArg, (char *) NULL);
+                    }
+
+                    // check if fork failed
+                    else if (pid < 0) {
+                        fprintf(stderr, "fork failed\n");
+                        return 1;
+                    }
+
+                }
 
                 else if (strncmp(splitLine[0], "keyfile", strlen("keyfile")) == 0) {
-                    // if (!splitLine[1] || splitLine[2]) {
-                    //     fprintf(stderr, "keyfile is called with 1 argument: <keyfile>");
-                    // }
+                    if (!splitLine[1] || splitLine[2]) {
+                        fprintf(stderr, "keyfile is called with 1 argument: <keyfile>");
+                    }
                     char new_keyf[256];
                     strip(splitLine[1], new_keyf);
 
@@ -304,25 +322,54 @@ int main(int argc, char **argv) {
                     strip(splitLine[1], new_password);
                     strip(splitLine[2], new_keyf);
 
-                    char keyBuf[8];
+                    unsigned char keyBuf[8];
 
                     PKCS5_PBKDF2_HMAC_SHA1(new_password, strlen(new_password), NULL, 0, 1000, 8, keyBuf);
+                    // int tail = 8;
+                    // while (tail < strlen(keyBuf)) {
+                    //     keyBuf[tail] = '\0';
+                    //     tail++;
+                    // }
                     printf("key: %s\n", keyBuf);
 
                     FILE *kfp = fopen(new_keyf, "w");
-                //     // fprintf(kfp, "%s", key);
-                    fprintf(kfp, "%s", new_password);
+                    fprintf(kfp, "%s", keyBuf);
 
                     strncpy(keyf, new_keyf, strlen(new_keyf));
                 }
 
-                // else if (strncmp(splitLine[0], "cd", strlen("cd")) == 0) {
-                    
-                // }
+                else if (strncmp(splitLine[0], "cd", strlen("cd")) == 0) {
+                    if (!splitLine[1] || splitLine[2]) {
+                        fprintf(stderr, "cd is called with 1 argument: <directory>");
+                    }
 
-                // else if (strncmp(splitLine[0], "mkdir", strlen("mkdir")) == 0) {
-                    
-                // }
+                    char dir[256];
+                    strip(splitLine[1], dir);
+
+                    if (chdir(dir) == -1) {
+                        fprintf(stderr, "failed to cd into directory %s\n", dir);
+                        return 1;
+                    }
+
+                    printf("ls:\n");
+                    system("ls");
+
+                }
+
+                else if (strncmp(splitLine[0], "mkdir", strlen("mkdir")) == 0) {
+                    if (!splitLine[1] || splitLine[2]) {
+                        fprintf(stderr, "mkdir is called with 1 argument: <directory>");
+                    }
+
+                    char dir[256];
+                    strip(splitLine[1], dir);
+
+                    if (mkdir(dir, S_IRWXU | S_IRWXG | S_IRWXO) == -1) {
+                        fprintf(stderr, "failed to make directory %s\n", dir);
+                        perror(0);
+                        return 1;
+                    }
+                }
 
                 else {
                     fprintf(stderr, "%s: not a valid command\n", splitLine[0]);
