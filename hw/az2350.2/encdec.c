@@ -279,7 +279,7 @@ int main(int argc, char **argv) {
 
                     fopen(new_keyf, "w");
 
-                    strncpy(keyf, new_keyf, strlen(splitLine[1]));
+                    strncpy(keyf, new_keyf, strlen(new_keyf));
 
                 }
 
