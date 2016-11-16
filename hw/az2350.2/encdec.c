@@ -70,6 +70,8 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
                     newArg[tail+1] = '\0';
                     printf("newArg: %s\n", newArg);
                     printf("newArg[i - lastDoubleQuotedStart + 1]: %c\n", newArg[i - lastDoubleQuotedStart + 1]);
+                    printf("newArg[i - lastDoubleQuotedStart]: %c\n", newArg[i - lastDoubleQuotedStart]);
+                    printf("newArg[i - lastDoubleQuotedStart-1]: %c\n", newArg[i - lastDoubleQuotedStart-1]);
                     printf("newArg2: %s\n", newArg);
 
                     splitLine[argCount] = newArg;
