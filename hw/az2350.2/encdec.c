@@ -177,7 +177,7 @@ void strip(char arg[], char strippedArg[]) {
         }
         j++;
     }
-    strippedArg[j] = '\0';
+    // strippedArg[j] = '\0';
 }
 
 int main(int argc, char **argv) {
