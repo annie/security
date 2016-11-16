@@ -199,7 +199,7 @@ int main(int argc, char **argv) {
                 continue;
             }
 
-            char keyf[256];
+            static char keyf[256];
             keyf[0] = '\0';
 
             while (fgets(line, sizeof(line), fp)) {
@@ -273,9 +273,9 @@ int main(int argc, char **argv) {
                 // }
 
                 else if (strncmp(splitLine[0], "keyfile", strlen("keyfile")) == 0) {
-                    if (!splitLine[1] || splitLine[2]) {
-                        fprintf(stderr, "keyfile is called with 1 argument: <keyfile>");
-                    }
+                    // if (!splitLine[1] || splitLine[2]) {
+                    //     fprintf(stderr, "keyfile is called with 1 argument: <keyfile>");
+                    // }
                     char new_keyf[256];
                     strip(splitLine[1], new_keyf);
 
@@ -304,6 +304,9 @@ int main(int argc, char **argv) {
 
                     char new_password[256];
                     char new_keyf[256];
+
+                    strip(splitLine[1], new_password);
+                    strip(splitLine[2], new_keyf);
 
                     FILE *kfp = fopen(new_keyf, "w");
                 //     // fprintf(kfp, "%s", key);
