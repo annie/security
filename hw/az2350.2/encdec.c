@@ -70,6 +70,7 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
                     newArg[tail+1] = '\0';
                     printf("newArg: %s\n", newArg);
                     printf("newArg[strlen(newArg)-1]: %c\n", newArg[strlen(newArg)-1]);
+                    printf("newArg2: %s\n", newArg);
 
                     splitLine[argCount] = newArg;
                     argCount++;
@@ -109,6 +110,7 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
                     newArg[tail+1] = '\0';
                     printf("newArg: %s\n", newArg);
                     printf("newArg[strlen(newArg)-1]: %c\n", newArg[strlen(newArg)-1]);
+                    printf("newArg2: %s\n", newArg);
 
                     splitLine[argCount] = newArg;
                     argCount++;
@@ -134,6 +136,7 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
                 newArg[tail+1] = '\0';
                 printf("newArg: %s\n", newArg);
                 printf("newArg[strlen(newArg)-1]: %c\n", newArg[strlen(newArg)-1]);
+                printf("newArg2: %s\n", newArg);
 
                 splitLine[argCount] = newArg;
                 argCount++;
