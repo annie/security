@@ -1,7 +1,7 @@
 CC = gcc
 INCLUDES =
 CFLAGS = -g -Wall $(INCLUDES)
-LDFLAGS = -g
+LDFLAGS = -g -lcrypto
 
 build:	encdec
 
