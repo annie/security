@@ -62,14 +62,12 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
 
                     char *newArg = malloc(sizeof(char) * 256);
                     strncpy(newArg, input + lastDoubleQuotedStart, i - lastDoubleQuotedStart + 1);
-                    // newArg = strtok(newArg, " ");
-                    // if (newArg[strlen(newArg)] == ' ') {
-                    //     newArg[strlen(newArg)-1] = '\0';
-                    // }
-                    // else {
-                    //     newArg[strlen(newArg)] = '\0';
-                    // }
-                    // printf("dq newArg: %s\n", newArg);
+                    // printf("DQ newArg[strlen(newArg)-1]:%cend\n", newArg[strlen(newArg)-1]);
+                    int tail = strlen(newArg)-1;
+                    while (newArg[tail] == ' ' || !newArg[tail]) {
+                        tail--;
+                    }
+                    newArg[tail+1] = '\0';
 
                     splitLine[argCount] = newArg;
                     argCount++;
@@ -101,14 +99,12 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
 
                     char *newArg = malloc(sizeof(char) * 256);
                     strncpy(newArg, input + lastSingleQuotedStart, i - lastSingleQuotedStart + 1);
-                    // newArg = strtok(newArg, " ");
-                    // if (newArg[strlen(newArg)] == ' ') {
-                    //     newArg[strlen(newArg)-1] = '\0';
-                    // }
-                    // else {
-                    //     newArg[strlen(newArg)] = '\0';
-                    // }
-                    // printf("sq newArg: %s\n", newArg);
+                    // printf("SQ newArg[strlen(newArg)-1]: %c\n", newArg[strlen(newArg)-1]);
+                    int tail = strlen(newArg)-1;
+                    while (newArg[tail] == ' ' || !newArg[tail]) {
+                        tail--;
+                    }
+                    newArg[tail+1] = '\0';
 
                     splitLine[argCount] = newArg;
                     argCount++;
@@ -126,13 +122,12 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
 
                 char *newArg = malloc(sizeof(char) * 256);
                 strncpy(newArg, input + lastUnquotedStart, i - lastUnquotedStart + 2);
-                // newArg = strtok(newArg, " ");
-                // if (newArg[strlen(newArg)] == ' ') {
-                //     newArg[strlen(newArg)-1] = '\0';
-                // }
-                // else {
-                //     newArg[strlen(newArg)] = '\0';
-                // }
+                // printf("UQ newArg[strlen(newArg)-1]:%cend\n", newArg[strlen(newArg)-1]);
+                int tail = strlen(newArg)-1;
+                while (newArg[tail] == ' ' || !newArg[tail]) {
+                    tail--;
+                }
+                newArg[tail+1] = '\0';
 
                 splitLine[argCount] = newArg;
                 argCount++;
