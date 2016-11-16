@@ -191,7 +191,8 @@ int main(int argc, char **argv) {
     }
 
     else {
-        for (int i = 1; i < argc; i++) {
+        int i;
+        for (i = 1; i < argc; i++) {
 
             FILE *fp = fopen(argv[i], "r");
             char line[256];
@@ -306,7 +307,8 @@ int main(int argc, char **argv) {
                 else {
                     fprintf(stderr, "%s: not a valid command\n", splitLine[0]);
                 }
-                for (int i = 0; i < 3; i++) {
+                int i;
+                for (i = 0; i < 3; i++) {
                     if (splitLine[i]) {
                         free(splitLine[i]);
                     }
