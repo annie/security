@@ -206,6 +206,9 @@ int main(int argc, char **argv) {
                 char *splitLine[3] = { NULL };
 
                 line[strlen(line)-1] = '\0';
+
+                printf("line: %s\n", line);
+                printf("keyf: %s\n", keyf);
                 
                 // printf("line: %s\n", line);
                 // int sanitized = sanitize(line, splitLine, 2);
@@ -220,9 +223,9 @@ int main(int argc, char **argv) {
                 }
 
                 if (strncmp(splitLine[0], "encrypt", strlen("encrypt")) == 0) {
-                    printf("splitLine[0]: %s\n", splitLine[0]);
-                    printf("splitLine[1]: %s\n", splitLine[1]);
-                    printf("splitLine[2]: %s\n", splitLine[2]);
+                    // printf("splitLine[0]: %s\n", splitLine[0]);
+                    // printf("splitLine[1]: %s\n", splitLine[1]);
+                    // printf("splitLine[2]: %s\n", splitLine[2]);
 
                     if (strlen(keyf) == 0) {
                         fprintf(stderr, "keyfile must be specified before encrypt/decrypt commands\n");
@@ -237,10 +240,10 @@ int main(int argc, char **argv) {
                     char outfile[256];
                     strip(splitLine[1], infile);
                     strip(splitLine[2], outfile);
-                    printf("infile: %s\n", infile);
-                    printf("outfile: %s\n", outfile);
+                    // printf("infile: %s\n", infile);
+                    // printf("outfile: %s\n", outfile);
 
-                    printf("keyf before fork: %s\n", keyf);
+                    // printf("keyf before fork: %s\n", keyf);
 
                     int pid = fork();
 
