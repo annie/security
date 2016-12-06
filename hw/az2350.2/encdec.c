@@ -20,7 +20,7 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
     int i = 0;
     while (i < strlen(input)) {
         // if we encounter an escape char
-        if (input[i] == '\\' && i < strlen(input)-1) {
+        if (input[i] == '\\') {
             if (inDoubleQuotes == 1) {
                 if (input[i+1] == '\\' || input[i+1] == '"') {
                     i += 2;
@@ -43,7 +43,7 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
             }
         }
         // if we encounter a double quote
-        if (input[i] == '"' && i < strlen(input)-1) {
+        if (input[i] == '"') {
             if (i >= 1 && input[i-1] != '\\') {
                 // beginning of a double-quoted string
                 if (inSingleQuotes == 0 && inDoubleQuotes == 0 && input[i-1] == ' ') {
@@ -79,7 +79,7 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
             }
         }
         // if we encounter a single quote
-        else if (input[i] == '\'' && i < strlen(input)-1) {
+        else if (input[i] == '\'') {
             if (i >= 1 && input[i-1] != '\\') {
                 // beginning of a single-quoted string
                 if (inDoubleQuotes == 0 && inSingleQuotes == 0 && input[i-1] == ' ') {
@@ -118,7 +118,7 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
         else if (i == strlen(input) - 1 || (input[i] != ' ' && input[i+1] == ' ')) {
             if (!inDoubleQuotes && !inSingleQuotes) {
                 if (argCount > maxArg) {
-                    fprintf(stderr, "too many args");
+                    fprintf(stderr, "too many args\n");
                     return 0;
                 }
 
@@ -144,8 +144,12 @@ int sanitize(char input[], char *splitLine[], int maxArg) {
         i++;
     }
 
-    if (inDoubleQuotes != 0 || inSingleQuotes != 0) {
-        fprintf(stderr, "unclosed quote\n");
+    if (inDoubleQuotes != 0) {
+        fprintf(stderr, "unclosed double quote\n");
+        return 0;
+    }
+    if (inSingleQuotes != 0) {
+        fprintf(stderr, "unclosed single quote\n");
         return 0;
     }
     return 1;
@@ -180,7 +184,7 @@ void strip(char arg[], char strippedArg[]) {
 
 int main(int argc, char **argv) {
     if (argc < 2) {
-        // start REPL
+        // read from stdin
     }
 
     else {
@@ -201,27 +205,19 @@ int main(int argc, char **argv) {
             while (fgets(line, sizeof(line), fp)) {
                 char *splitLine[3] = { NULL };
 
-                line[strlen(line)-1] = '\0';
-
-                printf("line: %s\n", line);
-                printf("keyf: %s\n", keyf);
-                
-                // printf("line: %s\n", line);
-                // int sanitized = sanitize(line, splitLine, 2);
-                // printf("sanitized: %d\n", sanitized);
-                // printf("splitLine[0]: %s\n\n", splitLine[0]);
+                int tail = strlen(line)-1;
+                while (line[tail] == '\n' || line[tail] == ' ') {
+                    line[tail] = '\0';
+                    tail++;
+                }
 
                 int sanitized = sanitize(line, splitLine, 2);
-                // printf("sanitized: %d\n", sanitized);
-                // printf("first arg: %s\n", splitLine[0]);
+
                 if (sanitized == 0 || !splitLine[0]) {
                     continue;
                 }
 
                 if (strncmp(splitLine[0], "encrypt", strlen("encrypt")) == 0) {
-                    // printf("splitLine[0]: %s\n", splitLine[0]);
-                    // printf("splitLine[1]: %s\n", splitLine[1]);
-                    // printf("splitLine[2]: %s\n", splitLine[2]);
 
                     if (strlen(keyf) == 0) {
                         fprintf(stderr, "keyfile must be specified before encrypt/decrypt commands\n");
@@ -236,8 +232,6 @@ int main(int argc, char **argv) {
                     char outfile[256];
                     strip(splitLine[1], infile);
                     strip(splitLine[2], outfile);
-                    // printf("infile: %s\n", infile);
-                    // printf("outfile: %s\n", outfile);
 
                     int pid = fork();
 
@@ -270,8 +264,6 @@ int main(int argc, char **argv) {
                     char outfile[256];
                     strip(splitLine[1], infile);
                     strip(splitLine[2], outfile);
-                    // printf("infile: %s\n", infile);
-                    // printf("outfile: %s\n", outfile);
 
                     int pid = fork();
 
@@ -298,12 +290,9 @@ int main(int argc, char **argv) {
                     char new_keyf[256];
                     strip(splitLine[1], new_keyf);
 
-                    printf("new_keyf: %s\n", new_keyf);
-
                     fopen(new_keyf, "w");
 
                     strncpy(keyf, new_keyf, strlen(new_keyf));
-                    printf("keyf set to: %s\n", keyf);
 
                 }
 
@@ -312,9 +301,6 @@ int main(int argc, char **argv) {
                         fprintf(stderr, "password is called with 2 arguments: <password> and <keyfile>");
                         continue;
                     }
-
-                    printf("password: %s\n", splitLine[1]);
-                    printf("pass keyfile: %s\n", splitLine[2]);
 
                     char new_password[256];
                     char new_keyf[256];
@@ -325,12 +311,6 @@ int main(int argc, char **argv) {
                     unsigned char keyBuf[8];
 
                     PKCS5_PBKDF2_HMAC_SHA1(new_password, strlen(new_password), NULL, 0, 1000, 8, keyBuf);
-                    // int tail = 8;
-                    // while (tail < strlen(keyBuf)) {
-                    //     keyBuf[tail] = '\0';
-                    //     tail++;
-                    // }
-                    printf("key: %s\n", keyBuf);
 
                     FILE *kfp = fopen(new_keyf, "w");
                     fprintf(kfp, "%s", keyBuf);
@@ -350,9 +330,6 @@ int main(int argc, char **argv) {
                         fprintf(stderr, "failed to cd into directory %s\n", dir);
                         return 1;
                     }
-
-                    printf("ls:\n");
-                    system("ls");
 
                 }
 

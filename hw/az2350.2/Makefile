@@ -7,7 +7,7 @@ build:	encdec
 
 encdec:	encdec.o
 
-encdec.o:	encdec.c encdec.h hmacsha1.h
+encdec.o:	encdec.c encdec.h
 
 .PHONY: clean
 clean:
