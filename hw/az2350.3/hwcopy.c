@@ -364,4 +364,6 @@ int main(int argc, char **argv) {
 
     free(docRootBuf);
     free(outAreaBuf);
+
+    return 0;
 }
