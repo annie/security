@@ -26,8 +26,8 @@ int getFileNames(char *buf, char *fn1, char *fn2) {
     int spaceCount = 0;
     for (i = 0; i < strlen(buf); i++) {
         // read into fn1 until we encounter a space
-        // note: assumes that there won't be other kinds of whitespace, like tabs or carriage returns
         if (i == strlen(buf)-1 && buf[i] != ' ') {
+            fn2[i-j] = buf[i];
             nameCount++;
         }
         else if (buf[i] == ' ') {
@@ -70,13 +70,12 @@ int getFileNames(char *buf, char *fn1, char *fn2) {
     fn1[strlen(fn1)] = '\0';
     fn2[strlen(fn2)] = '\0';
 
-    printf("fn1 within function: %s\n", fn1);
-
     return 0;
 }
 
 int main(int argc, char **argv) {
-    char *DEFAULT_CONFIG = "config.txt";
+
+    char *DEFAULT_CONFIG = "default_config.txt";
 
     if (argc != 1 && argc != 3) {
         fprintf(stderr, "usage: ./hwcopy OR ./hwcopy -c configfile\n");
@@ -118,11 +117,6 @@ int main(int argc, char **argv) {
     int aliasCount = 0;
 
     while (fgets(line, sizeof(line), cfp)) {
-        // char *command = strtok(line, " \n");
-        // char *path = strtok(NULL, " \n");
-        // path[strlen(path)] = '\0';
-        // printf("path: %s\n", path);
-
         char command[1024] = "";
         char path[1024] = "";
         char aliasPath[1024] = "";
@@ -136,7 +130,6 @@ int main(int argc, char **argv) {
             index++;
         }
         command[strlen(command)] = '\0';
-        // printf("command: %s\n", command);
         index++;
         command_len = index;
         while (index < strlen(line) && line[index] != ' ' && line[index] != '\n') {
@@ -144,7 +137,6 @@ int main(int argc, char **argv) {
             index++;
         }
         path[strlen(path)] = '\0';
-        // printf("path: %s\n", path);
         index++;
         path_len = index;
         while (index < strlen(line) && line[index] != '\n') {
@@ -152,7 +144,6 @@ int main(int argc, char **argv) {
             index++;
         }
         aliasPath[strlen(aliasPath)] = '\0';
-        // printf("aliasPath: %s\n", aliasPath);
 
         if (strncmp(command, DOC_ROOT, sizeof(char)*strlen(DOC_ROOT)) == 0) {
             if (strlen(docRootBuf) > 0) {
@@ -175,7 +166,6 @@ int main(int argc, char **argv) {
             }
             strncpy(outAreaBuf, path, strlen(path));
             outAreaBuf[strlen(outAreaBuf)] = '\0';
-            // printf("outAreaBuf: %s\n", path);
         }
         else if (strncmp(command, ALIAS, sizeof(char)*strlen(ALIAS)) == 0) {
             if (aliasCount == 100) {
@@ -194,8 +184,6 @@ int main(int argc, char **argv) {
                 }
                 fullAlias[alias_index + strlen(docRootBuf)] = path[alias_index];
             }
-
-            // printf("fullAlias: %s\n", fullAlias);
 
             // create symlink for alias (will not overwrite any previously set alias of the same name)
             aliases[aliasCount] = fullAlias;
@@ -222,7 +210,6 @@ int main(int argc, char **argv) {
     char buf[1024];
 
     while (fgets(buf, sizeof(buf), stdin)) {
-        printf("buf: %s\n", buf);
 
         char *fn1 = malloc(sizeof(char)*1024);
         char *fn2 = malloc(sizeof(char)*1024);
@@ -238,8 +225,6 @@ int main(int argc, char **argv) {
             fn2[i_fn2] = '\0';
         }
 
-        printf("fn1 before: %s\n", fn1);
-
         if (getFileNames(buf, fn1, fn2) < 0) {
             fprintf(stderr, "input must take the form <inputfile> <outfile>\n");
             continue;
@@ -252,13 +237,8 @@ int main(int argc, char **argv) {
             fprintf(stderr, "invalid input file path\n");
         }
 
-        printf("fn1: %s\n", fn1);
-
         // append input filename to the document root specified in config file
         char *docRoot_fn1 = malloc(sizeof(char)*1024);
-
-        // strncpy(docRoot_fn1, docRootBuf, sizeof(char)*strlen(docRootBuf));
-        // docRoot_fn1[strlen(docRoot_fn1)] = '\0';
 
         int docRoot_index;
         for (docRoot_index = 0; docRoot_index <= strlen(docRootBuf); docRoot_index++) {
@@ -307,7 +287,6 @@ int main(int argc, char **argv) {
         int pid = fork();
 
         if (pid == 0) {
-            printf("output dir: %s\n", outAreaBuf);
 
             // write buffer to output file
             if (chroot(outAreaBuf) != 0) {
@@ -336,8 +315,6 @@ int main(int argc, char **argv) {
                 free(tmp_fn2);
             }
 
-            printf("fn2 after: %s\n", fn2);
-
             FILE *fp2 = fopen(fn2, "w");
             if (!fp2) {
                 perror("output file error ");
@@ -358,7 +335,6 @@ int main(int argc, char **argv) {
 
     int i;
     for (i = 0; i < aliasCount; i++) {
-        printf("unlinking: %s\n", aliases[i]);
         unlink(aliases[i]);
     }
 

@@ -5,6 +5,9 @@ LDFLAGS = -g
 
 build:	hwcopy
 
+test:	clean
+		sudo python test.py
+
 encdec:	hwcopy.o
 
 encdec.o:	hwcopy.c hwcopy.h

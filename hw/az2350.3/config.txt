@@ -1,3 +1,3 @@
-DocumentRoot /Users/Annie/Documents/fall16/security/hw/az2350.3/docRoot
-OutputArea /Users/Annie/Documents/fall16/security/hw/az2350.3/output
-Alias /alias/ /Users/Annie/Documents/
+DocumentRoot test/docRoot
+OutputArea test/outputRoot/output
+Alias /inputAlias/ ../outerDir
