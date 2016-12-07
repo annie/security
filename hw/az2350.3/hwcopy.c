@@ -32,7 +32,6 @@ int getFileNames(char *buf, char *fn1, char *fn2) {
         }
         else if (buf[i] == ' ') {
             if (spacePrev == 1) {
-                printf("too many spaces\n");
                 return -1;
             }
             spacePrev = 1;
@@ -42,7 +41,6 @@ int getFileNames(char *buf, char *fn1, char *fn2) {
             if (spacePrev == 1) {
                 nameCount++;
                 if (nameCount > 2) {
-                    printf("too many names\n");
                     return -1;
                 }
                 j = i;
@@ -58,19 +56,15 @@ int getFileNames(char *buf, char *fn1, char *fn2) {
             spacePrev = 0;
         }
         if (spaceCount > 1) {
-            printf("too many spaces\n");
             return -1;
         }
     }
     if (nameCount != 2) {
-        printf("too few names\n");
         return -1;
     }
 
     fn1[strlen(fn1)] = '\0';
     fn2[strlen(fn2)] = '\0';
-
-    printf("fn2: %s\n", fn2);
 
     return 0;
 }
