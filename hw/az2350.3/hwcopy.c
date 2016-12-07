@@ -70,6 +70,8 @@ int getFileNames(char *buf, char *fn1, char *fn2) {
     fn1[strlen(fn1)] = '\0';
     fn2[strlen(fn2)] = '\0';
 
+    printf("fn2: %s\n", fn2);
+
     return 0;
 }
 
@@ -313,6 +315,12 @@ int main(int argc, char **argv) {
                     fn2[tmp_fn2_index] = tmp_fn2[tmp_fn2_index-1];
                 }
                 free(tmp_fn2);
+            }
+
+            int z = strlen(fn2)-1;
+            while (z < 1024) {
+                fn2[z] = '\0';
+                z++;
             }
 
             FILE *fp2 = fopen(fn2, "w");
